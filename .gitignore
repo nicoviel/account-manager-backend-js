@@ -1,0 +1,10 @@
+# Dépendances Node.js (Le dossier lourd à ignorer)
+node_modules/
+
+# Fichiers générés par la compilation TypeScript
+dist/
+
+# Logs d'erreurs npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

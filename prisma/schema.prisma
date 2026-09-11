@@ -1,0 +1,122 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model user {
+  id         Int       @id @default(autoincrement())
+  login      String?   @db.VarChar(50)
+  firstName  String?   @map("first_name") @db.VarChar(50)
+  lastName   String?   @map("last_name") @db.VarChar(50)
+  password   String?   @db.VarChar(50)
+  email      String?   @db.VarChar(50)
+  account    account[] 
+  note       note[]
+  bankAccount bank_account[]
+}
+
+model account {
+  id                        Int    @id @default(autoincrement())
+  currentAmount             Float? @map("current_amount")
+  futureAmountWithCredit    Float? @map("future_amount_with_credit")
+  futureAmountWithoutCredit Float? @map("future_amount_without_credit")
+  userId                    Int?   @map("user_id")
+  user                      user?  @relation(fields: [userId], references: [id])
+  liveCredit live_credit[]
+  liveDebit live_debit[]
+  monthlyCredit monthly_credit[]
+  monthlyDebit monthly_debit[]
+}
+
+model bank_account {
+  id       Int      @id @default(autoincrement())
+  userId   Int?     @map("user_id")
+  amount   Float?
+  name     String?  @db.VarChar(50)
+  company  String?  @db.VarChar(50)
+  user   user?      @relation(fields: [userId], references: [id])
+  liveCredit live_credit[]
+  liveDebit live_debit[]
+  monthlyCredit monthly_credit[]
+  monthlyDebit monthly_debit[]
+}
+
+model live_credit {
+  id              Int       @id @default(autoincrement())
+  amount          Float?
+  date  DateTime? @db.Date  @map("operation_date")
+  label           String?   @db.VarChar(50)
+  isCredited     Int?       @map("is_credited")
+  isInternal     Int?       @map("is_internal")
+  accountId      Int?       @map("account_id")
+  comment         String?   @db.VarChar(1000)
+  bankAccountId Int?        @map("bank_account_id")
+  bankAccount bank_account? @relation(fields: [bankAccountId], references: [id])
+  account account?          @relation(fields: [accountId], references: [id])
+}
+
+model monthly_debit {
+  id              Int       @id @default(autoincrement())
+  amount          Float?
+  date  DateTime?           @db.Date @map("operation_date")
+  label           String?   @db.VarChar(50)
+  isDebited     Int?        @map("is_debited")
+  isInternal     Int?       @map("is_internal")
+  accountId      Int?       @map("account_id")
+  comment         String?   @db.VarChar(1000)
+  bankAccountId Int?        @map("bank_account_id")
+  bankAccount bank_account? @relation(fields: [bankAccountId], references: [id])
+  account account?          @relation(fields: [accountId], references: [id])
+}
+
+model live_debit {
+  id              Int       @id @default(autoincrement())
+  amount          Float?
+  date  DateTime?           @db.Date @map("operation_date")
+  label           String?   @db.VarChar(50)
+  isDebited     Int?        @map("is_debited")
+  isInternal     Int?       @map("is_internal")
+  accountId      Int?       @map("account_id")
+  comment         String?   @db.VarChar(1000)
+  bankAccountId Int?        @map("bank_account_id")
+  bankAccount bank_account? @relation(fields: [bankAccountId], references: [id])
+  account account?          @relation(fields: [accountId], references: [id])
+}
+
+model monthly_credit {
+  id              Int       @id @default(autoincrement())
+  amount          Float?
+  date  DateTime?           @db.Date @map("operation_date")
+  label           String?   @db.VarChar(50)
+  isCredited     Int?       @map("is_credited")
+  isInternal     Int?       @map("is_internal")
+  accountId      Int?       @map("account_id")
+  comment         String?   @db.VarChar(1000)
+  bankAccountId Int?        @map("bank_account_id")
+  bankAccount bank_account? @relation(fields: [bankAccountId], references: [id])
+  account account?          @relation(fields: [accountId], references: [id])
+}
+
+model note {
+  id                        Int     @id @default(autoincrement())
+  text                      String? @map("text")
+  userId                    Int?    @map("user_id")
+  user                      user?   @relation(fields: [userId], references: [id])
+}
+
+
+model history {
+  id                 Int       @id @default(autoincrement())
+  account_id         Int?
+  end_month_amount   Float?
+  start_month_amount Float?
+  amount_of_credit   Float?
+  amount_of_debit    Float?
+  saving_amount      Float?
+  date               DateTime? @db.Date
+  total_amount       Float?
+}
