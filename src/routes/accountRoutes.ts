@@ -3,7 +3,7 @@ import { getAccount, totalCurrentAmount } from '../controllers/accountController
 
 const router = express.Router();
 
-router.post('/getAccount', getAccount);
-router.post('/totalCurrentAmount', totalCurrentAmount);
+router.post('/getAccount', (req, res, next) => getAccount(req, res, next));
+router.post('/totalCurrentAmount', (req, res, next) => totalCurrentAmount(req, res, next));
 
 export default router;

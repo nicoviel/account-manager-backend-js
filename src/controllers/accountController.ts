@@ -1,28 +1,24 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { accountService } from '../services/accountService.js';
 import { User } from '../models/user.model.js';
 import { Account } from '../models/account.model.js';
 
-export const getAccount = async (req: Request, borderRes: Response): Promise<any> => {
-  const user: User = req.body;
-
+export const getAccount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    const user: User = req.body;
     const account: Account | null = await accountService.findByUser(user);
-    return borderRes.status(200).json(account);
+    res.status(200).json(account);
   } catch (error) {
-    console.error("Erreur serveur:", error);
-    return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });
+    next(error);
   }
 };
 
-
-export const totalCurrentAmount = async (req: Request, borderRes: Response): Promise<any> => {
-  const user: User = req.body;
+export const totalCurrentAmount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    const user: User = req.body;
     const amount: number = await accountService.totalCurrentAmount(user);
-    return borderRes.status(200).json({ amount });
+    res.status(200).json({ amount });
   } catch (error) {
-    console.error("Erreur serveur:", error);
-    return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });
+    next(error);
   }
 };
