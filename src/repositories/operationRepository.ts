@@ -12,7 +12,8 @@ export const operationRepository = {
     });
      return rows.map(r => ({
     ...r,
-      debited: r.debited === 1
+      debited: r.debited === 1,
+      internal: r.internal === 1
   }));
   },
   getMonthlyCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyCredit[]> => {
@@ -22,7 +23,8 @@ export const operationRepository = {
     });
      return rows.map(r => ({
     ...r,
-      credited: r.credited === 1
+      credited: r.credited === 1,
+      internal: r.internal === 1
   }));
   },
 
@@ -33,7 +35,8 @@ export const operationRepository = {
     });
      return rows.map(r => ({
     ...r,
-      debited: r.debited === 1
+      debited: r.debited === 1,
+      internal: r.internal === 1
   }));
   },
 
@@ -44,7 +47,8 @@ export const operationRepository = {
     });
      return rows.map(r => ({
     ...r,
-      credited: r.credited === 1
+      credited: r.credited === 1,
+      internal: r.internal === 1
   }));
   },
 

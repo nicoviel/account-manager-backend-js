@@ -7,25 +7,29 @@ import { Account } from './account.model';
 import { BankAccount } from './bankAccount.model';
 
 
-export type LiveDebit =  Omit<PrismaLiveDebit, "debited">  & {
+export type LiveDebit =  Omit<PrismaLiveDebit, "debited"| "internal">  & {
   account?: Account;
   bankAccount?: BankAccount;
   debited: boolean;
+  internal: boolean;
 };
 
-export type LiveCredit =  Omit<PrismaLiveCredit, "credited"> & {
+export type LiveCredit =  Omit<PrismaLiveCredit, "credited"| "internal"> & {
   account?: Account;
   bankAccount?: BankAccount;
   credited: boolean;
+  internal: boolean;
 };
 
-export type MonthlyCredit =  Omit<PrismaMonthlyCredit, "credited"> & {
+export type MonthlyCredit =  Omit<PrismaMonthlyCredit, "credited"| "internal"> & {
   account?: Account;
   bankAccount?: BankAccount;
   credited: boolean;
+  internal: boolean;
 };
-export type MonthlyDebit =  Omit<PrismaMonthlyDebit, "debited"> & {
+export type MonthlyDebit =  Omit<PrismaMonthlyDebit, "debited"| "internal"> & {
   account?: Account;
   bankAccount?: BankAccount;
   debited: boolean;
+  internal: boolean;
 };

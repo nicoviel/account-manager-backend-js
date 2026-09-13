@@ -91,3 +91,27 @@ export const createMonthlyCredit = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+export const debitLiveCredit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: LiveCredit = req.body;
+    await operationService.debitLiveCredit(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const debitMonthlyCredit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: MonthlyCredit = req.body;
+    await operationService.debitMonthlyCredit(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
