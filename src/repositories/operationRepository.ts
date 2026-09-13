@@ -7,28 +7,45 @@ export const operationRepository = {
 
   getMonthlyDebit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyDebit[]> => {
     const client = tx || prisma;
-    return await client.monthly_debit.findMany({
+    const rows = await client.monthly_debit.findMany({
       where: { accountId: account.id }
     });
+     return rows.map(r => ({
+    ...r,
+      debited: r.debited === 1
+  }));
   },
   getMonthlyCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyCredit[]> => {
     const client = tx || prisma;
-    return await client.monthly_credit.findMany({
+    const rows = await client.monthly_credit.findMany({
       where: { accountId: account.id }
     });
+     return rows.map(r => ({
+    ...r,
+      credited: r.credited === 1
+  }));
   },
 
   getLiveDebit: async (account: Account, tx?: Prisma.TransactionClient): Promise<LiveDebit[]> => {
     const client = tx || prisma;
-    return await client.live_debit.findMany({
+    const rows = await client.live_debit.findMany({
       where: { accountId: account.id }
     });
+     return rows.map(r => ({
+    ...r,
+      debited: r.debited === 1
+  }));
   },
+
   getLiveCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<LiveCredit[]> => {
     const client = tx || prisma;
-    return await client.live_credit.findMany({
+    const rows = await client.live_credit.findMany({
       where: { accountId: account.id }
     });
+     return rows.map(r => ({
+    ...r,
+      credited: r.credited === 1
+  }));
   },
 
   async saveMonthlyDebit (operation: MonthlyDebit, tx?: Prisma.TransactionClient): Promise<any>  {
