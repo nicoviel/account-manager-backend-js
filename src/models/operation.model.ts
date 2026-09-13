@@ -1,26 +1,27 @@
-import { account as PrismaAccount } from '@prisma/client';
 import { live_debit as PrismaLiveDebit } from '@prisma/client';
 import { live_credit as PrismaLiveCredit } from '@prisma/client';
 import { monthly_debit as PrismaMonthlyDebit } from '@prisma/client';
 import { monthly_credit as PrismaMonthlyCredit } from '@prisma/client';
-import { bank_account as PrismaBankAccount } from '@prisma/client';
+
+import { Account } from './account.model';
+import { BankAccount } from './bankAccount.model';
 
 
-export type LiveDebitWithAccount = PrismaLiveDebit & {
-  account?: PrismaAccount;
-  bankAccount?: PrismaBankAccount;
+export type LiveDebit = PrismaLiveDebit & {
+  account?: Account;
+  bankAccount?: BankAccount;
 };
 
-export type LiveCreditWithAccount = PrismaLiveCredit & {
-  account?: PrismaAccount;
-  bankAccount?: PrismaBankAccount;
+export type LiveCredit = PrismaLiveCredit & {
+  account?: Account;
+  bankAccount?: BankAccount;
 };
 
-export type MonthlyCreditWithAccount = PrismaMonthlyCredit & {
-  account?: PrismaAccount;
-  bankAccount?: PrismaBankAccount;
+export type MonthlyCredit = PrismaMonthlyCredit & {
+  account?: Account;
+  bankAccount?: BankAccount;
 };
-export type MonthlyDebitWithAccount = PrismaMonthlyDebit & {
-  account?: PrismaAccount;
-  bankAccount?: PrismaBankAccount;
+export type MonthlyDebit = PrismaMonthlyDebit & {
+  account?: Account;
+  bankAccount?: BankAccount;
 };

@@ -1,41 +1,37 @@
 import prisma from '../config/db.js';
-
-import { account as PrismaAccount, Prisma } from '@prisma/client';
-import { monthly_debit as PrismaMonthlyDebit } from '@prisma/client';
-import { monthly_credit as PrismaMonthlyCredit } from '@prisma/client';
-import { live_debit as PrismaLiveDebit } from '@prisma/client';
-import { live_credit as PrismaLiveCredit } from '@prisma/client';
-import { LiveCreditWithAccount, LiveDebitWithAccount, MonthlyCreditWithAccount, MonthlyDebitWithAccount } from '../models/operation.model.js';
+import { Prisma } from '@prisma/client';
+import { Account } from '../models/account.model.js';
+import { LiveCredit, LiveDebit, MonthlyCredit, MonthlyDebit } from '../models/operation.model.js';
 
 export const operationRepository = {
 
-  getMonthlyDebit: async (account: PrismaAccount, tx?: Prisma.TransactionClient): Promise<PrismaMonthlyDebit[]> => {
+  getMonthlyDebit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyDebit[]> => {
     const client = tx || prisma;
     return await client.monthly_debit.findMany({
       where: { accountId: account.id }
     });
   },
-  getMonthlyCredit: async (account: PrismaAccount, tx?: Prisma.TransactionClient): Promise<PrismaMonthlyCredit[]> => {
+  getMonthlyCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyCredit[]> => {
     const client = tx || prisma;
     return await client.monthly_credit.findMany({
       where: { accountId: account.id }
     });
   },
 
-  getLiveDebit: async (account: PrismaAccount, tx?: Prisma.TransactionClient): Promise<PrismaLiveDebit[]> => {
+  getLiveDebit: async (account: Account, tx?: Prisma.TransactionClient): Promise<LiveDebit[]> => {
     const client = tx || prisma;
     return await client.live_debit.findMany({
       where: { accountId: account.id }
     });
   },
-  getLiveCredit: async (account: PrismaAccount, tx?: Prisma.TransactionClient): Promise<PrismaLiveCredit[]> => {
+  getLiveCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<LiveCredit[]> => {
     const client = tx || prisma;
     return await client.live_credit.findMany({
       where: { accountId: account.id }
     });
   },
 
-  async saveMonthlyDebit (operation: MonthlyDebitWithAccount, tx?: Prisma.TransactionClient): Promise<any>  {
+  async saveMonthlyDebit (operation: MonthlyDebit, tx?: Prisma.TransactionClient): Promise<any>  {
     const client = tx || prisma;
 
     // 1. On extrait et convertit les données pour correspondre à MySQL
@@ -56,7 +52,7 @@ export const operationRepository = {
     });
   },
 
-  async saveMonthlyCredit (operation: MonthlyCreditWithAccount, tx?: Prisma.TransactionClient): Promise<any> {
+  async saveMonthlyCredit (operation: MonthlyCredit, tx?: Prisma.TransactionClient): Promise<any> {
     const client = tx || prisma;
 
     // 1. On extrait et convertit les données pour correspondre à MySQL
@@ -78,7 +74,7 @@ export const operationRepository = {
   },
 
 
-async saveLiveDebit(operation: LiveDebitWithAccount, tx?: Prisma.TransactionClient): Promise<any> {
+async saveLiveDebit(operation: LiveDebit, tx?: Prisma.TransactionClient): Promise<any> {
   const client = tx || prisma;
 
   // 1. On extrait et convertit les données pour correspondre à MySQL
@@ -101,7 +97,7 @@ async saveLiveDebit(operation: LiveDebitWithAccount, tx?: Prisma.TransactionClie
 },
 
 
-  async saveLiveCredit (operation: LiveCreditWithAccount, tx?: Prisma.TransactionClient): Promise<any> {
+  async saveLiveCredit (operation: LiveCredit, tx?: Prisma.TransactionClient): Promise<any> {
     const client = tx || prisma;
 
     // 1. On extrait et convertit les données pour correspondre à MySQL

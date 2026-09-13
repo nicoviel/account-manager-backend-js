@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { account as PrismaAccount } from '@prisma/client';
-import { user as PrismaUser } from '@prisma/client';
 import { accountService } from '../services/accountService.js';
+import { User } from '../models/user.model.js';
+import { Account } from '../models/account.model.js';
 
 export const getAccount = async (req: Request, borderRes: Response): Promise<any> => {
-  const user: PrismaUser = req.body;
+  const user: User = req.body;
 
   try {
-    const account: PrismaAccount | null = await accountService.findByUser(user);
+    const account: Account | null = await accountService.findByUser(user);
     return borderRes.status(200).json(account);
   } catch (error) {
     console.error("Erreur serveur:", error);
@@ -17,7 +17,7 @@ export const getAccount = async (req: Request, borderRes: Response): Promise<any
 
 
 export const totalCurrentAmount = async (req: Request, borderRes: Response): Promise<any> => {
-  const user: PrismaUser = req.body;
+  const user: User = req.body;
   try {
     const amount: number = await accountService.totalCurrentAmount(user);
     return borderRes.status(200).json({ amount });

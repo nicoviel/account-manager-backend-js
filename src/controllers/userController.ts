@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { userRepository } from '../repositories/userRepository.js';
-import { user as PrismaUser } from '@prisma/client';
 import { userService } from '../services/userService.js';
+import { User } from '../models/user.model.js';
 
 export class UserController {
 public  async newUser (req: Request, res: Response): Promise<any>  {
@@ -13,7 +13,7 @@ public  async newUser (req: Request, res: Response): Promise<any>  {
     const amountAsNumber = Number(amountParam);
 
     const { login, email, password, firstName, lastName } = req.body;
-    const user: PrismaUser = await userService.createUser({ login, email, password, firstName, lastName }, amountAsNumber);
+    const user: User = await userService.createUser({ login, email, password, firstName, lastName }, amountAsNumber);
 
     // 👉 Le token dans le header
     res.setHeader("Authorization", `Bearer ${this.generateToken(user)}`);
@@ -31,7 +31,7 @@ public async login (req: Request, borderRes: Response): Promise<any> {
   const { login, password } = req.body;
 
   try {
-    const user: PrismaUser | null = await userService.login(login, password);
+    const user: User | null = await userService.login(login, password);
     if (!user) {
       return borderRes.status(500).json({ message: "Your password is incorrect." });
     }
@@ -48,7 +48,7 @@ public async login (req: Request, borderRes: Response): Promise<any> {
   }
 };
 
-private generateToken = (user: PrismaUser): string => {
+private generateToken = (user: User): string => {
   // Génération du JWT
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {

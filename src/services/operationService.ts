@@ -1,42 +1,37 @@
-import { account as PrismaAccount } from '@prisma/client';
-import { monthly_debit as PrismaMonthyDebit } from '@prisma/client';
 import { operationRepository } from '../repositories/operationRepository.js';
-import { monthly_credit as PrismaMonthlyCredit } from '@prisma/client';
-import { live_debit as PrismaLiveDebit } from '@prisma/client';
-import { live_credit as PrismaLiveCredit } from '@prisma/client';
-import { monthly_debit as PrismaMonthlyDebit } from '@prisma/client';
 import prisma from '../config/db.js';
 import { accountRepository } from '../repositories/accountRepository.js';
-import { LiveCreditWithAccount, LiveDebitWithAccount, MonthlyCreditWithAccount, MonthlyDebitWithAccount } from '../models/operation.model.js';
+import { Account } from '../models/account.model.js';
+import { LiveCredit, LiveDebit, MonthlyCredit, MonthlyDebit } from '../models/operation.model.js';
 
 export const operationService = {
 
-    getMonthlyDebit: async (account: PrismaAccount): Promise<PrismaMonthyDebit[]> => {
-        const debits: PrismaMonthyDebit[] = await operationRepository.getMonthlyDebit(account);
+    getMonthlyDebit: async (account: Account): Promise<MonthlyDebit[]> => {
+        const debits: MonthlyDebit[] = await operationRepository.getMonthlyDebit(account);
         return debits;
     },
 
-    getMonthlyCredit: async (account: PrismaAccount): Promise<PrismaMonthlyCredit[]> => {
-        const credits: PrismaMonthlyCredit[] = await operationRepository.getMonthlyCredit(account);
+    getMonthlyCredit: async (account: Account): Promise<MonthlyCredit[]> => {
+        const credits: MonthlyCredit[] = await operationRepository.getMonthlyCredit(account);
         return credits;
     },
 
-    getLiveDebit: async (account: PrismaAccount): Promise<PrismaLiveDebit[]> => {
-        const debits: PrismaLiveDebit[] = await operationRepository.getLiveDebit(account);
+    getLiveDebit: async (account: Account): Promise<LiveDebit[]> => {
+        const debits: LiveDebit[] = await operationRepository.getLiveDebit(account);
         return debits;
     },
 
-    getLiveCredit: async (account: PrismaAccount): Promise<PrismaLiveCredit[]> => {
-        const credits: PrismaLiveCredit[] = await operationRepository.getLiveCredit(account);
+    getLiveCredit: async (account: Account): Promise<LiveCredit[]> => {
+        const credits: LiveCredit[] = await operationRepository.getLiveCredit(account);
         return credits;
     },
 
 
-    createLiveDebit: async (operation: LiveDebitWithAccount) => {
+    createLiveDebit: async (operation: LiveDebit) => {
         console.log("Create Live Debit operation received:", operation);
         await prisma.$transaction(async (tx) => {
             if (operation.account?.id) {
-                const account: PrismaAccount | null = await accountRepository.findById(operation.account.id, tx);
+                const account: Account | null = await accountRepository.findById(operation.account.id, tx);
                 if (account) {
                     console.log("---------------------------------------------------------------");
                     console.log("Create Live Debit " + operation.label + "(" + operation.amount + ")");
@@ -58,11 +53,11 @@ export const operationService = {
         });
     },
 
-    createLiveCredit: async (operation: LiveCreditWithAccount) => {
+    createLiveCredit: async (operation: LiveCredit) => {
         console.log("Create Live Credit operation received:", operation);
         await prisma.$transaction(async (tx) => {
             if (operation.account?.id) {
-                const account: PrismaAccount | null = await accountRepository.findById(operation.account.id, tx);
+                const account: Account | null = await accountRepository.findById(operation.account.id, tx);
                 if (account) {
                     console.log("---------------------------------------------------------------");
                     console.log("Create Live Credit " + operation.label + "(" + operation.amount + ")");
@@ -85,11 +80,11 @@ export const operationService = {
         })
     },
 
-    createMonthlyCredit: async (operation: MonthlyCreditWithAccount) => {
+    createMonthlyCredit: async (operation: MonthlyCredit) => {
         console.log("Create Monthly Credit operation received:", operation);
         await prisma.$transaction(async (tx) => {
             if (operation.account?.id) {
-                const account: PrismaAccount | null = await accountRepository.findById(operation.account.id, tx);
+                const account: Account | null = await accountRepository.findById(operation.account.id, tx);
                 if (account) {
                     console.log("---------------------------------------------------------------");
                     console.log("Create Monthly Credit " + operation.label + "(" + operation.amount + ")");
@@ -113,11 +108,11 @@ export const operationService = {
         })
     },
 
-    createMonthlyDebit: async (operation: MonthlyDebitWithAccount) => {
+    createMonthlyDebit: async (operation: MonthlyDebit) => {
         console.log("Create Monthly Debit operation received:", operation);
         await prisma.$transaction(async (tx) => {
             if (operation.account?.id) {
-                const account: PrismaAccount | null = await accountRepository.findById(operation.account.id, tx);
+                const account: Account | null = await accountRepository.findById(operation.account.id, tx);
                 if (account) {
                     console.log("---------------------------------------------------------------");
                     console.log("Create Monthly Debit " + operation.label + "(" + operation.amount + ")");
@@ -145,13 +140,13 @@ export const operationService = {
 
 }
 
-async function calculateFutureAmountWithoutCredit(account: PrismaAccount, tx?: any): Promise<number> {
+async function calculateFutureAmountWithoutCredit(account: Account, tx?: any): Promise<number> {
     const amountTobeDebitedMonthly :number  = await  operationRepository.amountToBeDebitedMonthly(account.id,tx);
     const amountTobeDebitedLive :number  =  await  operationRepository.amountToBeDebitedLive(account.id,tx);
     return amountTobeDebitedMonthly+amountTobeDebitedLive;
 }
 
-async function calculateFutureAmountWithCredit(account: PrismaAccount, tx?: any): Promise<number> {
+async function calculateFutureAmountWithCredit(account: Account, tx?: any): Promise<number> {
     const amountTobeDebited = await calculateFutureAmountWithoutCredit(account, tx);
     const amountTobeCreditedMonthly :number  = await  operationRepository.amountToBeCreditedMonthly(account.id,tx);
     const amountTobeCreditedLive :number  = await  operationRepository.amountToBeCreditedLive(account.id,tx);

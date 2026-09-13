@@ -1,8 +1,8 @@
 
 import { note as PrismaNote } from '@prisma/client';
-import { user as PrismaUser } from '@prisma/client';
+import { User } from './user.model';
 
 
-export type NoteInput = PrismaNote & {
-  user: PrismaUser;
+export type Note = PrismaNote & {
+  user: User;
 };

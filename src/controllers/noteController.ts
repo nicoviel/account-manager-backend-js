@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
 
-import { noteRepository } from '../repositories/noteRepository.js';
-import { note  as PrismaNote } from '@prisma/client'; 
-import { user  as PrismaUser } from '@prisma/client'; 
-import { NoteInput } from '../models/note.model.js';
+import { noteRepository } from '../repositories/noteRepository.js'; 
+import { Note } from '../models/note.model.js';
+import { User } from '../models/user.model.js';
 
 
 export const getNote = async (req: Request, borderRes: Response): Promise<any> => {
-  const user: PrismaUser = req.body;
+  const user: User = req.body;
   try {
-    const note: PrismaNote | null = await noteRepository.findByUser(user);
+    const note: Note | null = await noteRepository.findByUser(user);
     return borderRes.status(200).json(note);
   } catch (error) {
     console.error("Erreur serveur:", error);
@@ -19,9 +18,9 @@ export const getNote = async (req: Request, borderRes: Response): Promise<any> =
 
 
 export const save = async (req: Request, borderRes: Response): Promise<any> => {
-  const note: NoteInput = req.body;
+  const note: Note = req.body;
   try {
-    const noteSaved: PrismaNote | null = await noteRepository.save(note);
+    const noteSaved: Note | null = await noteRepository.save(note);
     return borderRes.status(200).json(noteSaved);
   } catch (error) {
     console.error("Erreur serveur:", error);

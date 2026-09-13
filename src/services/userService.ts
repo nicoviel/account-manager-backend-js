@@ -1,13 +1,13 @@
 
 import { accountRepository } from '../repositories/accountRepository.js';
 import { userRepository } from '../repositories/userRepository.js';
-import { user as PrismaUser } from '@prisma/client';
 import prisma from '../config/db.js'; 
+import { User } from '../models/user.model.js';
 
 export const userService = {
 
-    login: async (login: string, password: string): Promise<PrismaUser | null> => {
-        const user: PrismaUser | null = await userRepository.findByUser(login);
+    login: async (login: string, password: string): Promise<User | null> => {
+        const user: User | null = await userRepository.findByUser(login);
         if (!user) {
             console.error("User not found");
             return null;
@@ -21,8 +21,8 @@ export const userService = {
         return user;
     },
 
-    createUser: async (userData: { login: string; email: string; password: string; firstName: string; lastName: string }, amount: number): Promise<PrismaUser> => {
-        const user: PrismaUser | null = await userRepository.findByUser(userData.login);
+    createUser: async (userData: { login: string; email: string; password: string; firstName: string; lastName: string }, amount: number): Promise<User> => {
+        const user: User | null = await userRepository.findByUser(userData.login);
         if (!user) {
              return await prisma.$transaction(async (tx: any) => {
                 
@@ -48,7 +48,7 @@ export const userService = {
                 return savedUser;
             });
         }
-        return {} as PrismaUser;
+        return {} as User;
 
     }
 }

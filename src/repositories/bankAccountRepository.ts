@@ -1,10 +1,11 @@
 import prisma from '../config/db.js';
-import { bank_account as PrismaBankAccount } from '@prisma/client';
-import { user as PrismaUser, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { User } from '../models/user.model.js';
+import { BankAccount } from '../models/bankAccount.model.js';
 
 export const bankAccountRepository = {
 
-  findByUser: async (user: PrismaUser, tx?: Prisma.TransactionClient): Promise<PrismaBankAccount[]> => {
+  findByUser: async (user: User, tx?: Prisma.TransactionClient): Promise<BankAccount[]> => {
     const client = tx || prisma;
     return await client.bank_account.findMany({
       where: { userId: user.id }
@@ -13,7 +14,7 @@ export const bankAccountRepository = {
 
 
 
-  totalAmountForAllAccount: async (user: PrismaUser, tx?: Prisma.TransactionClient): Promise<number> => {
+  totalAmountForAllAccount: async (user: User, tx?: Prisma.TransactionClient): Promise<number> => {
     const client = tx || prisma;
     const result = await prisma.bank_account.aggregate({
       where: {

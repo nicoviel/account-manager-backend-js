@@ -105,7 +105,7 @@ model note {
   id                        Int     @id @default(autoincrement())
   text                      String? @map("text")
   userId                    Int    @map("user_id") @unique
-  user                      user?   @relation(fields: [userId], references: [id])
+  user                      user   @relation(fields: [userId], references: [id])
 }
 
 

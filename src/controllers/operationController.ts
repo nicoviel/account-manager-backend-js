@@ -1,16 +1,13 @@
 import { Request, Response } from 'express';
-import { account as PrismaAccount } from '@prisma/client';
 import { operationRepository } from '../repositories/operationRepository.js';
-import { monthly_debit as PrismaMonthlyDebit } from '@prisma/client';
-import { monthly_credit as PrismaMonthlyCredit } from '@prisma/client';
-import { live_debit as PrismaLiveDebit } from '@prisma/client';
-import { live_credit as PrismaLiveCredit } from '@prisma/client';
 import { operationService } from '../services/operationService.js';
+import { Account } from '../models/account.model.js';
+import { LiveCredit, LiveDebit, LiveDebit, MonthlyCredit, MonthlyDebit } from '../models/operation.model.js';
 
 export const getMonthlyDebit = async (req: Request, borderRes: Response): Promise<any> => {
-  const account: PrismaAccount = req.body;
+  const account: Account = req.body;
   try {
-    const operations: PrismaMonthlyDebit[] = await operationService.getMonthlyDebit(account);
+    const operations: MonthlyDebit[] = await operationService.getMonthlyDebit(account);
     //console.log("Monthly debit retrieved:", operations);
     borderRes.setHeader('Content-Type', 'application/json');
      return borderRes.status(200).send(JSON.stringify(operations));
@@ -22,9 +19,9 @@ export const getMonthlyDebit = async (req: Request, borderRes: Response): Promis
 
 
 export const getMonthlyCredit = async (req: Request, borderRes: Response): Promise<any> => {
-  const account: PrismaAccount = req.body;
+  const account: Account = req.body;
   try {
-    const operations: PrismaMonthlyCredit[] = await operationService.getMonthlyCredit(account);
+    const operations: MonthlyCredit[] = await operationService.getMonthlyCredit(account);
     //console.log("Monthly credit retrieved:", operations);
     borderRes.setHeader('Content-Type', 'application/json');
     return borderRes.status(200).send(JSON.stringify(operations));
@@ -35,9 +32,9 @@ export const getMonthlyCredit = async (req: Request, borderRes: Response): Promi
 };
 
 export const getLiveDebit = async (req: Request, borderRes: Response): Promise<any> => {
-  const account: PrismaAccount = req.body;
+  const account: Account = req.body;
   try {
-    const operations: PrismaLiveDebit[] = await operationService.getLiveDebit(account);
+    const operations: LiveDebit[] = await operationService.getLiveDebit(account);
     //console.log("Live debit retrieved:", operations);
     borderRes.setHeader('Content-Type', 'application/json');
     return borderRes.status(200).send(JSON.stringify(operations));
@@ -49,9 +46,9 @@ export const getLiveDebit = async (req: Request, borderRes: Response): Promise<a
 
 
 export const getLiveCredit = async (req: Request, borderRes: Response): Promise<any> => {
-  const account: PrismaAccount = req.body;
+  const account: Account = req.body;
   try {
-    const operations: PrismaLiveCredit[] = await operationService.getLiveCredit(account);
+    const operations: LiveCredit[] = await operationService.getLiveCredit(account);
     //console.log("Live credit retrieved:", operations);
   borderRes.setHeader('Content-Type', 'application/json');
     return borderRes.status(200).send(JSON.stringify(operations));
@@ -63,7 +60,7 @@ export const getLiveCredit = async (req: Request, borderRes: Response): Promise<
 
 
 export const createLiveDebit = async (req: Request, borderRes: Response): Promise<any> => {
-  const operation: PrismaLiveDebit = req.body;
+  const operation: LiveDebit = req.body;
   try {
     await operationService.createLiveDebit(operation);
 
@@ -76,7 +73,7 @@ export const createLiveDebit = async (req: Request, borderRes: Response): Promis
 };
 
 export const createLiveCredit = async (req: Request, borderRes: Response): Promise<any> => {
-  const operation: PrismaLiveCredit = req.body;
+  const operation: LiveCredit = req.body;
   try {
     await operationService.createLiveCredit(operation);
 
@@ -89,7 +86,7 @@ export const createLiveCredit = async (req: Request, borderRes: Response): Promi
 };
 
 export const createMonthlyDebit = async (req: Request, borderRes: Response): Promise<any> => {
-  const operation: PrismaMonthlyDebit = req.body;
+  const operation: MonthlyDebit = req.body;
   try {
     await operationService.createMonthlyDebit(operation);
 
@@ -102,7 +99,7 @@ export const createMonthlyDebit = async (req: Request, borderRes: Response): Pro
 };
 
 export const createMonthlyCredit = async (req: Request, borderRes: Response): Promise<any> => {
-  const operation: PrismaMonthlyCredit = req.body;
+  const operation: MonthlyCredit = req.body;
   try {
     await operationService.createMonthlyCredit(operation);
 
