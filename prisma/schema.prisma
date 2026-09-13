@@ -104,7 +104,7 @@ model monthly_credit {
 model note {
   id                        Int     @id @default(autoincrement())
   text                      String? @map("text")
-  userId                    Int?    @map("user_id")
+  userId                    Int    @map("user_id") @unique
   user                      user?   @relation(fields: [userId], references: [id])
 }
 
