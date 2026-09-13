@@ -11,7 +11,7 @@ export const getMonthlyDebit = async (req: Request, borderRes: Response): Promis
   const account: PrismaAccount = req.body;
   try {
     const operations: PrismaMonthlyDebit[] = await operationService.getMonthlyDebit(account);
-    console.log("Monthly debit retrieved:", operations);
+    //console.log("Monthly debit retrieved:", operations);
     borderRes.setHeader('Content-Type', 'application/json');
      return borderRes.status(200).send(JSON.stringify(operations));
   } catch (error) {
@@ -25,7 +25,7 @@ export const getMonthlyCredit = async (req: Request, borderRes: Response): Promi
   const account: PrismaAccount = req.body;
   try {
     const operations: PrismaMonthlyCredit[] = await operationService.getMonthlyCredit(account);
-    console.log("Monthly credit retrieved:", operations);
+    //console.log("Monthly credit retrieved:", operations);
     borderRes.setHeader('Content-Type', 'application/json');
     return borderRes.status(200).send(JSON.stringify(operations));
   } catch (error) {
@@ -38,7 +38,7 @@ export const getLiveDebit = async (req: Request, borderRes: Response): Promise<a
   const account: PrismaAccount = req.body;
   try {
     const operations: PrismaLiveDebit[] = await operationService.getLiveDebit(account);
-    console.log("Live debit retrieved:", operations);
+    //console.log("Live debit retrieved:", operations);
     borderRes.setHeader('Content-Type', 'application/json');
     return borderRes.status(200).send(JSON.stringify(operations));
   } catch (error) {
@@ -52,9 +52,62 @@ export const getLiveCredit = async (req: Request, borderRes: Response): Promise<
   const account: PrismaAccount = req.body;
   try {
     const operations: PrismaLiveCredit[] = await operationService.getLiveCredit(account);
-    console.log("Live credit retrieved:", operations);
+    //console.log("Live credit retrieved:", operations);
   borderRes.setHeader('Content-Type', 'application/json');
     return borderRes.status(200).send(JSON.stringify(operations));
+  } catch (error) {
+    console.error("Erreur serveur:", error);
+    return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });
+  }
+};
+
+
+export const createLiveDebit = async (req: Request, borderRes: Response): Promise<any> => {
+  const operation: PrismaLiveDebit = req.body;
+  try {
+    await operationService.createLiveDebit(operation);
+
+  borderRes.setHeader('Content-Type', 'application/json');
+    return borderRes.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Erreur serveur:", error);
+    return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });
+  }
+};
+
+export const createLiveCredit = async (req: Request, borderRes: Response): Promise<any> => {
+  const operation: PrismaLiveCredit = req.body;
+  try {
+    await operationService.createLiveCredit(operation);
+
+    borderRes.setHeader('Content-Type', 'application/json');
+    return borderRes.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Erreur serveur:", error);
+    return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });
+  }
+};
+
+export const createMonthlyDebit = async (req: Request, borderRes: Response): Promise<any> => {
+  const operation: PrismaMonthlyDebit = req.body;
+  try {
+    await operationService.createMonthlyDebit(operation);
+
+  borderRes.setHeader('Content-Type', 'application/json');
+    return borderRes.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Erreur serveur:", error);
+    return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });
+  }
+};
+
+export const createMonthlyCredit = async (req: Request, borderRes: Response): Promise<any> => {
+  const operation: PrismaMonthlyCredit = req.body;
+  try {
+    await operationService.createMonthlyCredit(operation);
+
+  borderRes.setHeader('Content-Type', 'application/json');
+    return borderRes.status(200).json({ success: true });
   } catch (error) {
     console.error("Erreur serveur:", error);
     return borderRes.status(500).json({ message: "Une erreur serveur est survenue." });

@@ -24,5 +24,21 @@ export const accountRepository = {
     });
   },
 
+  findById: async (id: number, tx?: Prisma.TransactionClient): Promise<PrismaAccount | null> => {
+    const client = tx || prisma;
+    return await client.account.findUnique({
+      where: { id: id }
+    });
+
+  },
+
+  update: async (id: number, data: Prisma.accountUpdateInput, tx?: Prisma.TransactionClient): Promise<PrismaAccount> => {
+    const client = tx || prisma;
+    return await client.account.update({
+      where: { id: id },
+      data: data
+    });
+  },
+
 };
 

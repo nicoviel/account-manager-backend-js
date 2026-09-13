@@ -24,7 +24,7 @@ export const userService = {
     createUser: async (userData: { login: string; email: string; password: string; firstName: string; lastName: string }, amount: number): Promise<PrismaUser> => {
         const user: PrismaUser | null = await userRepository.findByUser(userData.login);
         if (!user) {
-             return await prisma.$transaction(async (tx) => {
+             return await prisma.$transaction(async (tx: any) => {
                 
                 // Première écriture : Création de l'utilisateur (on passe 'tx')
                 const savedUser = await userRepository.create(userData, tx);

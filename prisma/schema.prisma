@@ -50,8 +50,8 @@ model live_credit {
   amount          Float?
   date  DateTime? @db.Date  @map("operation_date")
   label           String?   @db.VarChar(50)
-  isCredited     Int?       @map("is_credited")
-  isInternal     Int?       @map("is_internal")
+  credited     Int?       @map("is_credited")
+  internal     Int?       @map("is_internal")
   accountId      Int?       @map("account_id")
   comment         String?   @db.VarChar(1000)
   bankAccountId Int?        @map("bank_account_id")
@@ -64,8 +64,8 @@ model monthly_debit {
   amount          Float?
   date  DateTime?           @db.Date @map("operation_date")
   label           String?   @db.VarChar(50)
-  isDebited     Int?        @map("is_debited")
-  isInternal     Int?       @map("is_internal")
+  debited     Int?        @map("is_debited")
+  internal     Int?       @map("is_internal")
   accountId      Int?       @map("account_id")
   comment         String?   @db.VarChar(1000)
   bankAccountId Int?        @map("bank_account_id")
@@ -78,8 +78,8 @@ model live_debit {
   amount          Float?
   date  DateTime?           @db.Date @map("operation_date")
   label           String?   @db.VarChar(50)
-  isDebited     Int?        @map("is_debited")
-  isInternal     Int?       @map("is_internal")
+  debited     Int?        @map("is_debited")
+  internal     Int?       @map("is_internal")
   accountId      Int?       @map("account_id")
   comment         String?   @db.VarChar(1000)
   bankAccountId Int?        @map("bank_account_id")
@@ -92,8 +92,8 @@ model monthly_credit {
   amount          Float?
   date  DateTime?           @db.Date @map("operation_date")
   label           String?   @db.VarChar(50)
-  isCredited     Int?       @map("is_credited")
-  isInternal     Int?       @map("is_internal")
+  credited     Int?       @map("is_credited")
+  internal     Int?       @map("is_internal")
   accountId      Int?       @map("account_id")
   comment         String?   @db.VarChar(1000)
   bankAccountId Int?        @map("bank_account_id")
