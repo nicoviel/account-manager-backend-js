@@ -114,4 +114,27 @@ export const debitMonthlyCredit = async (req: Request, res: Response, next: Next
   }
 };
 
+export const debitMonthlyDebit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: MonthlyDebit = req.body;
+    await operationService.debitMonthlyDebit(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const debitLiveDebit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: LiveDebit = req.body;
+    await operationService.debitLiveDebit(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 

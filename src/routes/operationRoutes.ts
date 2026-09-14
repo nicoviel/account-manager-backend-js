@@ -5,7 +5,9 @@ import {
   createMonthlyCredit,
   createMonthlyDebit,
   debitLiveCredit,
+  debitLiveDebit,
   debitMonthlyCredit,
+  debitMonthlyDebit,
   getLiveCredit,
   getLiveDebit,
   getMonthlyCredit,
@@ -26,6 +28,10 @@ router.post('/createMonthlyCredit', (req, res, next) => createMonthlyCredit(req,
 
 router.post('/debitLiveCredit', (req, res, next) => debitLiveCredit(req, res, next));
 router.post('/debitMonthlyCredit', (req, res, next) => debitMonthlyCredit(req, res, next));
+
+router.post('/debitLiveDebit', (req, res, next) => debitLiveDebit(req, res, next));
+router.post('/debitMonthlyDebit', (req, res, next) => debitMonthlyDebit(req, res, next));
+
 
 
 export default router;

@@ -346,9 +346,196 @@ export const operationService = {
                 },
             } as MonthlyCredit;
         });
-    }
+    },
 
+
+
+
+    debitLiveDebit: async (operation: LiveDebit): Promise<LiveDebit> => {
+        return await prisma.$transaction(async (tx) => {
+            const dbLiveDebit = await tx.live_debit.findUnique({
+                where: { id: operation.id },
+                include: {
+                    account: true,
+                    bankAccount: true,
+                },
+            });
+
+            if (!dbLiveDebit) {
+                throw new Error('Live debit introuvable');
+            }
+
+            if (dbLiveDebit.debited === 1) {
+                return {
+                    ...dbLiveDebit,
+                    debited: true,
+                    internal: dbLiveDebit.internal === 1,
+                } as LiveDebit;
+            }
+
+            const account = dbLiveDebit.account;
+            if (!account) {
+                throw new Error('Compte introuvable pour ce live debit');
+            }
+
+            const amount = Number(dbLiveDebit.amount ?? 0);
+            const currentAmount = Number(account.currentAmount ?? 0);
+
+            console.log('---------------------------------------------------------------');
+            console.log('Debit Live Debit ' + dbLiveDebit.label + ' (' + amount + ')');
+            console.log('Amounts before operation: ');
+            console.log('Current amount:' + currentAmount);
+            console.log('Future amount with credit amount:' + account.futureAmountWithCredit);
+            console.log('Future amount without credit amount:' + account.futureAmountWithoutCredit);
+
+            const updatedLiveDebit = await tx.live_debit.update({
+                where: { id: dbLiveDebit.id },
+                data: {
+                    debited: 1,
+                },
+            });
+
+            const newCurrentAmount = currentAmount - amount;
+
+
+
+            await tx.account.update({
+                where: { id: account.id },
+                data: {
+                    currentAmount: newCurrentAmount,
+                },
+            });
+
+            console.log('Amounts after operation: ');
+            console.log('Current amount:' + newCurrentAmount);
+            console.log('Future amount with credit amount:' + account.futureAmountWithCredit);
+            console.log('Future amount without credit amount:' + account.futureAmountWithCredit);
+
+            if (dbLiveDebit.internal === 1 && dbLiveDebit.bankAccountId) {
+                const bankAccount = await tx.bank_account.findUnique({
+                    where: { id: dbLiveDebit.bankAccountId },
+                });
+
+                if (bankAccount) {
+                    const bankAmount = Number(bankAccount.amount ?? 0);
+                    console.log('Debit Bank account ' + bankAccount.name + ' of ' + amount);
+
+                    await tx.bank_account.update({
+                        where: { id: bankAccount.id },
+                        data: {
+                            amount: bankAmount + amount,
+                        },
+                    });
+                }
+            }
+
+            console.log('---------------------------------------------------------------');
+
+            return {
+                ...updatedLiveDebit,
+                debited: true,
+                internal: updatedLiveDebit.internal === 1,
+                account: {
+                    ...account,
+                    currentAmount: newCurrentAmount,
+                },
+            } as LiveDebit;
+        });
+    },
+
+
+
+    debitMonthlyDebit: async (operation: MonthlyDebit): Promise<MonthlyDebit> => {
+        return await prisma.$transaction(async (tx) => {
+            const dbMonthlyDebit = await tx.monthly_debit.findUnique({
+                where: { id: operation.id },
+                include: {
+                    account: true,
+                    bankAccount: true,
+                },
+            });
+
+            if (!dbMonthlyDebit) {
+                throw new Error('Monthly debit introuvable');
+            }
+
+            if (dbMonthlyDebit.debited === 1) {
+                return {
+                    ...dbMonthlyDebit,
+                    debited: true,
+                    internal: dbMonthlyDebit.internal === 1,
+                } as MonthlyDebit;
+            }
+
+            const account = dbMonthlyDebit.account;
+            if (!account) {
+                throw new Error('Compte introuvable pour ce Monthly debit');
+            }
+
+            const amount = Number(dbMonthlyDebit.amount ?? 0);
+            const currentAmount = Number(account.currentAmount ?? 0);
+
+            console.log('---------------------------------------------------------------');
+            console.log('Debit Monthly Debit ' + dbMonthlyDebit.label + ' (' + amount + ')');
+            console.log('Amounts before operation: ');
+            console.log('Current amount:' + currentAmount);
+            console.log('Future amount with credit amount:' + account.futureAmountWithCredit);
+            console.log('Future amount without credit amount:' + account.futureAmountWithoutCredit);
+
+            const updatedMonthlyDebit = await tx.monthly_debit.update({
+                where: { id: dbMonthlyDebit.id },
+                data: {
+                    debited: 1,
+                },
+            });
+
+            const newCurrentAmount = currentAmount - amount;
+
+            await tx.account.update({
+                where: { id: account.id },
+                data: {
+                    currentAmount: newCurrentAmount,
+                },
+            });
+
+            console.log('Amounts after operation: ');
+            console.log('Current amount:' + newCurrentAmount);
+            console.log('Future amount with credit amount:' + account.futureAmountWithCredit);
+            console.log('Future amount without credit amount:' + account.futureAmountWithCredit);
+
+            if (dbMonthlyDebit.internal === 1 && dbMonthlyDebit.bankAccountId) {
+                const bankAccount = await tx.bank_account.findUnique({
+                    where: { id: dbMonthlyDebit.bankAccountId },
+                });
+
+                if (bankAccount) {
+                    const bankAmount = Number(bankAccount.amount ?? 0);
+                    console.log('Debit Bank account ' + bankAccount.name + ' of ' + amount);
+
+                    await tx.bank_account.update({
+                        where: { id: bankAccount.id },
+                        data: {
+                            amount: bankAmount + amount,
+                        },
+                    });
+                }
+            }
+
+            console.log('---------------------------------------------------------------');
+
+            return {
+                ...updatedMonthlyDebit,
+                debited: true,
+                internal: updatedMonthlyDebit.internal === 1,
+                account: {
+                    ...account,
+                    currentAmount: newCurrentAmount,
+                },
+            } as MonthlyDebit;
+        });
+    }
 }
+
 
 
 
