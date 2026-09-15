@@ -537,193 +537,61 @@ export const operationService = {
 
 
     deleteLiveDebit: async (id: number) => {
-          return await prisma.$transaction(async (tx) => {
-            const dbDebit = await tx.live_debit.findUnique({
-                where: { id: id },
-                include: {
-                    account: true,
-                    bankAccount: true,
-                },
-            });
-
-            if (!dbDebit) {
-                throw new Error('Live debit introuvable');
-            }
-
-            const account = dbDebit.account;
-            if (!account) {
-                throw new Error('Compte introuvable pour ce Live debit');
-            }
-
-            await tx.live_debit.delete({
-                where: { id: id }
-            });
-
-            const currentAmount = Number(account.currentAmount ?? 0);
-
-
-            const newFutureAmountWithCredit =
-                currentAmount - await calculateFutureAmountWithCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            const newFutureAmountWithoutCredit =
-                currentAmount - await calculateFutureAmountWithoutCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            await tx.account.update({
-                where: { id: account.id },
-                data: {
-                    futureAmountWithCredit: newFutureAmountWithCredit,
-                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
-                },
+        return await prisma.$transaction(async (tx) => {
+            await deleteOperationAndRefreshAccount({
+                tx,
+                id,
+                entityName: 'Live debit',
+                findOperation: (client) => client.live_debit.findUnique({
+                    where: { id },
+                    include: { account: true, bankAccount: true },
+                }),
+                deleteOperation: (client) => client.live_debit.delete({ where: { id } }),
             });
         });
     },
 
     deleteLiveCredit: async (id: number) => {
-             return await prisma.$transaction(async (tx) => {
-            const dbCredit = await tx.live_credit.findUnique({
-                where: { id: id },
-                include: {
-                    account: true,
-                    bankAccount: true,
-                },
-            });
-
-            if (!dbCredit) {
-                throw new Error('Live credit introuvable');
-            }
-
-            const account = dbCredit.account;
-            if (!account) {
-                throw new Error('Compte introuvable pour ce Live credit');
-            }
-
-            await tx.live_credit.delete({
-                where: { id: id }
-            });
-
-            const currentAmount = Number(account.currentAmount ?? 0);
-
-            const newFutureAmountWithCredit =
-                currentAmount - await calculateFutureAmountWithCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            const newFutureAmountWithoutCredit =
-                currentAmount - await calculateFutureAmountWithoutCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            await tx.account.update({
-                where: { id: account.id },
-                data: {
-                    futureAmountWithCredit: newFutureAmountWithCredit,
-                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
-                },
+        return await prisma.$transaction(async (tx) => {
+            await deleteOperationAndRefreshAccount({
+                tx,
+                id,
+                entityName: 'Live credit',
+                findOperation: (client) => client.live_credit.findUnique({
+                    where: { id },
+                    include: { account: true, bankAccount: true },
+                }),
+                deleteOperation: (client) => client.live_credit.delete({ where: { id } }),
             });
         });
-     },
+    },
 
     deleteMonthlyDebit: async (id: number) => {
         return await prisma.$transaction(async (tx) => {
-            const dbDebit = await tx.monthly_debit.findUnique({
-                where: { id: id },
-                include: {
-                    account: true,
-                    bankAccount: true,
-                },
-            });
-
-            if (!dbDebit) {
-                throw new Error('Monthly debit introuvable');
-            }
-
-            const account = dbDebit.account;
-            if (!account) {
-                throw new Error('Compte introuvable pour ce Monthly debit');
-            }
-
-            await tx.monthly_debit.delete({
-                where: { id: id }
-            });
-
-            const currentAmount = Number(account.currentAmount ?? 0);
-
-
-            const newFutureAmountWithCredit =
-                currentAmount - await calculateFutureAmountWithCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            const newFutureAmountWithoutCredit =
-                currentAmount - await calculateFutureAmountWithoutCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            await tx.account.update({
-                where: { id: account.id },
-                data: {
-                    futureAmountWithCredit: newFutureAmountWithCredit,
-                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
-                },
+            await deleteOperationAndRefreshAccount({
+                tx,
+                id,
+                entityName: 'Monthly debit',
+                findOperation: (client) => client.monthly_debit.findUnique({
+                    where: { id },
+                    include: { account: true, bankAccount: true },
+                }),
+                deleteOperation: (client) => client.monthly_debit.delete({ where: { id } }),
             });
         });
-
     },
 
     deleteMonthlyCredit: async (id: number) => {
-                     return await prisma.$transaction(async (tx) => {
-            const dbCredit = await tx.monthly_credit.findUnique({
-                where: { id: id },
-                include: {
-                    account: true,
-                    bankAccount: true,
-                },
-            });
-
-            if (!dbCredit) {
-                throw new Error('Monthly credit introuvable');
-            }
-
-            const account = dbCredit.account;
-            if (!account) {
-                throw new Error('Compte introuvable pour ce monthly credit');
-            }
-
-            await tx.monthly_credit.delete({
-                where: { id: id }
-            });
-
-            const currentAmount = Number(account.currentAmount ?? 0);
-
-
-            const newFutureAmountWithCredit =
-                currentAmount - await calculateFutureAmountWithCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            const newFutureAmountWithoutCredit =
-                currentAmount - await calculateFutureAmountWithoutCredit(
-                    { ...account, currentAmount: currentAmount } as Account,
-                    tx
-                );
-
-            await tx.account.update({
-                where: { id: account.id },
-                data: {
-                    futureAmountWithCredit: newFutureAmountWithCredit,
-                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
-                },
+        return await prisma.$transaction(async (tx) => {
+            await deleteOperationAndRefreshAccount({
+                tx,
+                id,
+                entityName: 'Monthly credit',
+                findOperation: (client) => client.monthly_credit.findUnique({
+                    where: { id },
+                    include: { account: true, bankAccount: true },
+                }),
+                deleteOperation: (client) => client.monthly_credit.delete({ where: { id } }),
             });
         });
     },
@@ -731,6 +599,58 @@ export const operationService = {
 
 
 
+
+async function refreshAccountFutureAmounts(account: Account, tx?: any): Promise<void> {
+    const currentAmount = Number(account.currentAmount ?? 0);
+
+    const newFutureAmountWithCredit =
+        currentAmount - await calculateFutureAmountWithCredit(
+            { ...account, currentAmount: currentAmount } as Account,
+            tx
+        );
+
+    const newFutureAmountWithoutCredit =
+        currentAmount - await calculateFutureAmountWithoutCredit(
+            { ...account, currentAmount: currentAmount } as Account,
+            tx
+        );
+
+    await tx.account.update({
+        where: { id: account.id },
+        data: {
+            futureAmountWithCredit: newFutureAmountWithCredit,
+            futureAmountWithoutCredit: newFutureAmountWithoutCredit,
+        },
+    });
+}
+
+async function deleteOperationAndRefreshAccount<T extends { account?: Account | null }>({
+    tx,
+    id,
+    entityName,
+    findOperation,
+    deleteOperation,
+}: {
+    tx: any;
+    id: number;
+    entityName: string;
+    findOperation: (client: any) => Promise<T | null>;
+    deleteOperation: (client: any) => Promise<any>;
+}): Promise<void> {
+    const operation = await findOperation(tx);
+
+    if (!operation) {
+        throw new Error(`${entityName} introuvable`);
+    }
+
+    const account = operation.account;
+    if (!account) {
+        throw new Error(`Compte introuvable pour ce ${entityName.toLowerCase()}`);
+    }
+
+    await deleteOperation(tx);
+    await refreshAccountFutureAmounts(account, tx);
+}
 
 async function calculateFutureAmountWithoutCredit(account: Account, tx?: any): Promise<number> {
     const amountTobeDebitedMonthly: number = await operationRepository.amountToBeDebitedMonthly(account.id, tx);
