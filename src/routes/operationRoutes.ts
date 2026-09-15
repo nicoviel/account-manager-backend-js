@@ -8,6 +8,10 @@ import {
   debitLiveDebit,
   debitMonthlyCredit,
   debitMonthlyDebit,
+  deleteLiveCredit,
+  deleteLiveDebit,
+  deleteMonthlyCredit,
+  deleteMonthlyDebit,
   getLiveCredit,
   getLiveDebit,
   getMonthlyCredit,
@@ -32,6 +36,10 @@ router.post('/debitMonthlyCredit', (req, res, next) => debitMonthlyCredit(req, r
 router.post('/debitLiveDebit', (req, res, next) => debitLiveDebit(req, res, next));
 router.post('/debitMonthlyDebit', (req, res, next) => debitMonthlyDebit(req, res, next));
 
+router.delete('/deleteMonthlyDebit/:id', (req, res, next) => deleteMonthlyDebit(req, res, next));
+router.delete('/deleteLiveCredit/:id', (req, res, next) => deleteLiveCredit(req, res, next));
+router.delete('/deleteMonthlyCredit/:id', (req, res, next) => deleteMonthlyCredit(req, res, next));
+router.delete('/deleteLiveDebit/:id', (req, res, next) => deleteLiveDebit(req, res, next));
 
 
 export default router;

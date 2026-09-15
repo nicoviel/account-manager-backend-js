@@ -136,5 +136,56 @@ export const debitLiveDebit = async (req: Request, res: Response, next: NextFunc
   }
 };
 
+export const deleteMonthlyDebit= async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const operation: LiveDebit = req.body;
+    await operationService.deleteMonthlyDebit(id);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const deleteLiveDebit= async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const operation: LiveDebit = req.body;
+    await operationService.deleteLiveDebit(id);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteLiveCredit= async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const operation: LiveDebit = req.body;
+    await operationService.deleteLiveCredit(id);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteMonthlyCredit= async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const operation: LiveDebit = req.body;
+    await operationService.deleteMonthlyCredit(id);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 
 

@@ -533,7 +533,200 @@ export const operationService = {
                 },
             } as MonthlyDebit;
         });
-    }
+    },
+
+
+    deleteLiveDebit: async (id: number) => {
+          return await prisma.$transaction(async (tx) => {
+            const dbDebit = await tx.live_debit.findUnique({
+                where: { id: id },
+                include: {
+                    account: true,
+                    bankAccount: true,
+                },
+            });
+
+            if (!dbDebit) {
+                throw new Error('Live debit introuvable');
+            }
+
+            const account = dbDebit.account;
+            if (!account) {
+                throw new Error('Compte introuvable pour ce Live debit');
+            }
+
+            await tx.live_debit.delete({
+                where: { id: id }
+            });
+
+            const currentAmount = Number(account.currentAmount ?? 0);
+
+
+            const newFutureAmountWithCredit =
+                currentAmount - await calculateFutureAmountWithCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            const newFutureAmountWithoutCredit =
+                currentAmount - await calculateFutureAmountWithoutCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            await tx.account.update({
+                where: { id: account.id },
+                data: {
+                    futureAmountWithCredit: newFutureAmountWithCredit,
+                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
+                },
+            });
+        });
+    },
+
+    deleteLiveCredit: async (id: number) => {
+             return await prisma.$transaction(async (tx) => {
+            const dbCredit = await tx.live_credit.findUnique({
+                where: { id: id },
+                include: {
+                    account: true,
+                    bankAccount: true,
+                },
+            });
+
+            if (!dbCredit) {
+                throw new Error('Live credit introuvable');
+            }
+
+            const account = dbCredit.account;
+            if (!account) {
+                throw new Error('Compte introuvable pour ce Live credit');
+            }
+
+            await tx.live_credit.delete({
+                where: { id: id }
+            });
+
+            const currentAmount = Number(account.currentAmount ?? 0);
+
+            const newFutureAmountWithCredit =
+                currentAmount - await calculateFutureAmountWithCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            const newFutureAmountWithoutCredit =
+                currentAmount - await calculateFutureAmountWithoutCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            await tx.account.update({
+                where: { id: account.id },
+                data: {
+                    futureAmountWithCredit: newFutureAmountWithCredit,
+                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
+                },
+            });
+        });
+     },
+
+    deleteMonthlyDebit: async (id: number) => {
+        return await prisma.$transaction(async (tx) => {
+            const dbDebit = await tx.monthly_debit.findUnique({
+                where: { id: id },
+                include: {
+                    account: true,
+                    bankAccount: true,
+                },
+            });
+
+            if (!dbDebit) {
+                throw new Error('Monthly debit introuvable');
+            }
+
+            const account = dbDebit.account;
+            if (!account) {
+                throw new Error('Compte introuvable pour ce Monthly debit');
+            }
+
+            await tx.monthly_debit.delete({
+                where: { id: id }
+            });
+
+            const currentAmount = Number(account.currentAmount ?? 0);
+
+
+            const newFutureAmountWithCredit =
+                currentAmount - await calculateFutureAmountWithCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            const newFutureAmountWithoutCredit =
+                currentAmount - await calculateFutureAmountWithoutCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            await tx.account.update({
+                where: { id: account.id },
+                data: {
+                    futureAmountWithCredit: newFutureAmountWithCredit,
+                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
+                },
+            });
+        });
+
+    },
+
+    deleteMonthlyCredit: async (id: number) => {
+                     return await prisma.$transaction(async (tx) => {
+            const dbCredit = await tx.monthly_credit.findUnique({
+                where: { id: id },
+                include: {
+                    account: true,
+                    bankAccount: true,
+                },
+            });
+
+            if (!dbCredit) {
+                throw new Error('Monthly credit introuvable');
+            }
+
+            const account = dbCredit.account;
+            if (!account) {
+                throw new Error('Compte introuvable pour ce monthly credit');
+            }
+
+            await tx.monthly_credit.delete({
+                where: { id: id }
+            });
+
+            const currentAmount = Number(account.currentAmount ?? 0);
+
+
+            const newFutureAmountWithCredit =
+                currentAmount - await calculateFutureAmountWithCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            const newFutureAmountWithoutCredit =
+                currentAmount - await calculateFutureAmountWithoutCredit(
+                    { ...account, currentAmount: currentAmount } as Account,
+                    tx
+                );
+
+            await tx.account.update({
+                where: { id: account.id },
+                data: {
+                    futureAmountWithCredit: newFutureAmountWithCredit,
+                    futureAmountWithoutCredit: newFutureAmountWithoutCredit,
+                },
+            });
+        });
+    },
 }
 
 
