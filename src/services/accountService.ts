@@ -17,5 +17,10 @@ export const accountService = {
             return account.currentAmount? account.currentAmount + amount : amount;
          }
          return 0;
-    }
+    },
+
+    reset: async (account: Account) => {
+
+    },
+
 }

@@ -185,7 +185,46 @@ export const deleteMonthlyCredit= async (req: Request, res: Response, next: Next
   }
 };
 
+export const debitMonthlyDebits = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: MonthlyDebit[] = req.body;
+    await operationService.debitMonthlyDebits(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
 
+export const debitLiveDebits = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: LiveDebit[] = req.body;
+    await operationService.debitLiveDebits(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
 
+export const creditLiveCredits = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: LiveCredit[] = req.body;
+    await operationService.creditLiveCredits(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
 
-
+export const creditMonthlyCredits = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const operation: MonthlyCredit[] = req.body;
+    await operationService.creditMonthlyCredits(operation);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -3,6 +3,7 @@ import prisma from '../config/db.js';
 import { accountRepository } from '../repositories/accountRepository.js';
 import { Account } from '../models/account.model.js';
 import { LiveCredit, LiveDebit, MonthlyCredit, MonthlyDebit } from '../models/operation.model.js';
+import { debitMonthlyCredit } from '../controllers/operationController.js';
 
 export const operationService = {
 
@@ -595,6 +596,30 @@ export const operationService = {
             });
         });
     },
+
+    debitMonthlyDebits: async (operations: MonthlyDebit[]) => {
+        for (const operation of operations) {
+            await operationService.debitMonthlyDebit(operation);
+        }
+    },
+
+    debitLiveDebits: async (operations: LiveDebit[]) => {
+        for (const operation of operations) {
+            await operationService.debitLiveDebit(operation);
+        }
+    },
+
+    creditLiveCredits: async (operations: LiveCredit[]) => {
+        for (const operation of operations) {
+            await operationService.debitLiveCredit(operation);
+        }
+    },
+
+    creditMonthlyCredits: async (operations: MonthlyCredit[]) => {
+        for (const operation of operations) {
+            await operationService.debitMonthlyCredit(operation);
+        }
+    },
 }
 
 
@@ -622,6 +647,7 @@ async function refreshAccountFutureAmounts(account: Account, tx?: any): Promise<
             futureAmountWithoutCredit: newFutureAmountWithoutCredit,
         },
     });
+
 }
 
 async function deleteOperationAndRefreshAccount<T extends { account?: Account | null }>({
