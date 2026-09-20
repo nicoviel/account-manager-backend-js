@@ -1,7 +1,8 @@
 import prisma from '../config/db.js';
-import {  Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { User } from '../models/user.model.js';
 import { Account } from '../models/account.model.js';
+import { bankAccountRepository } from './bankAccountRepository.js';
 
 export const accountRepository = {
   /**
@@ -48,6 +49,15 @@ export const accountRepository = {
         user: true
       }
     });
+  },
+
+  getTotalCurrentAmount: async (user: User): Promise<number> => {
+    const account: Account | null = await accountRepository.findByUser(user);
+    if (!account)
+      return 0;
+    const amount: number = await bankAccountRepository.totalAmountForAllAccount(user);
+
+    return amount + (account.currentAmount ?? 0);
   },
 
 };
