@@ -21,14 +21,20 @@ export const accountRepository = {
   create: async (data: Prisma.accountCreateInput, tx?: Prisma.TransactionClient): Promise<Account> => {
     const client = tx || prisma;
     return await client.account.create({
-      data: data
+      data: data,
+      include: {
+        user: true
+      }
     });
   },
 
   findById: async (id: number, tx?: Prisma.TransactionClient): Promise<Account | null> => {
     const client = tx || prisma;
     return await client.account.findUnique({
-      where: { id: id }
+      where: { id: id },
+      include: {
+        user: true
+      }
     });
 
   },
@@ -37,7 +43,10 @@ export const accountRepository = {
     const client = tx || prisma;
     return await client.account.update({
       where: { id: id },
-      data: data
+      data: data,
+      include: {
+        user: true
+      }
     });
   },
 

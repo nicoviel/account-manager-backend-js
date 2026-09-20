@@ -4,5 +4,5 @@ import { User } from './user.model';
 
 
 export type Account = PrismaAccount & {
-    user: User
+    user: User | null
 };

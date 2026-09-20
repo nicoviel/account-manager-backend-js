@@ -43,7 +43,11 @@ export const operationService = {
                     await operationRepository.saveLiveDebit(operation, tx);
                     account.futureAmountWithCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithCredit(account, tx) : 0;
                     account.futureAmountWithoutCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithoutCredit(account, tx) : 0;
-                    await accountRepository.update(account.id, account, tx);
+                    await accountRepository.update(account.id, {
+                        currentAmount: account.currentAmount,
+                        futureAmountWithCredit: account.futureAmountWithCredit,
+                        futureAmountWithoutCredit: account.futureAmountWithoutCredit,
+                    }, tx);
                     console.log("Amounts after operation: ");
                     console.log("Current amount:" + account.currentAmount);
                     console.log("Future amount with credit amount:" + account.futureAmountWithCredit);
@@ -69,7 +73,11 @@ export const operationService = {
                     await operationRepository.saveLiveCredit(operation, tx);
                     account.futureAmountWithCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithCredit(account, tx) : 0;
                     account.futureAmountWithoutCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithoutCredit(account, tx) : 0;
-                    await accountRepository.update(account.id, account, tx);
+                    await accountRepository.update(account.id, {
+                        currentAmount: account.currentAmount,
+                        futureAmountWithCredit: account.futureAmountWithCredit,
+                        futureAmountWithoutCredit: account.futureAmountWithoutCredit,
+                    }, tx);
                     console.log("Amounts after operation: ");
                     console.log("Current amount:" + account.currentAmount);
                     console.log("Future amount with credit amount:" + account.futureAmountWithCredit);
@@ -96,7 +104,8 @@ export const operationService = {
                     await operationRepository.saveMonthlyCredit(operation, tx);
                     account.futureAmountWithCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithCredit(account, tx) : 0;
                     account.futureAmountWithoutCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithoutCredit(account, tx) : 0;
-                    await accountRepository.update(account.id, account, tx);
+                    const { user, ...newAccount } = account;
+                    await accountRepository.update(account.id,newAccount, tx);
                     console.log("Amounts after operation: ");
                     console.log("Current amount:" + account.currentAmount);
                     console.log("Future amount with credit amount:" + account.futureAmountWithCredit);
@@ -124,7 +133,11 @@ export const operationService = {
                     await operationRepository.saveMonthlyDebit(operation, tx);
                     account.futureAmountWithCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithCredit(account, tx) : 0;
                     account.futureAmountWithoutCredit = account.currentAmount ? account.currentAmount - await calculateFutureAmountWithoutCredit(account, tx) : 0;
-                    await accountRepository.update(account.id, account, tx);
+                    await accountRepository.update(account.id, {
+                        currentAmount: account.currentAmount,
+                        futureAmountWithCredit: account.futureAmountWithCredit,
+                        futureAmountWithoutCredit: account.futureAmountWithoutCredit,
+                    }, tx);
                     console.log("Amounts after operation: ");
                     console.log("Current amount:" + account.currentAmount);
                     console.log("Future amount with credit amount:" + account.futureAmountWithCredit);

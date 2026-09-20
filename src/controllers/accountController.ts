@@ -29,7 +29,9 @@ export const reset = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const account: Account = req.body;
     console.log('Reset account',account);
-    await reportService.createAndSendReport(account.user);
+    if (account.user) {
+      await reportService.createAndSendReport(account.user);
+    }
     await historyService.updateHistory(account.id)
     await historyService.createHistory(account)
     await accountService.reset(account)
