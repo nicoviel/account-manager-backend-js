@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 export const emailService = {
-  sendPdf: async (to: string, pdfBuffer: Buffer | Uint8Array) => {
+  sendPdf: async (to: string,subject:string, content:string, pdfBuffer: Buffer | Uint8Array) => {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
@@ -13,10 +13,10 @@ export const emailService = {
     });
 
     await transporter.sendMail({
-      from: 'ton.email@gmail.com',
+      from: process.env.EMAIL_USER,
       to,
-      subject: 'Votre rapport PDF',
-      text: 'Veuillez trouver ci-joint le rapport.',
+      subject: subject,
+      text: content,
       attachments: [
         {
           filename: 'rapport.pdf',

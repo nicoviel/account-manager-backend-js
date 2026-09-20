@@ -6,6 +6,7 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
 import noteRoutes from './routes/noteRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 import operationRoutes from './routes/operationRoutes.js';
 import bankAccountRoutes from './routes/bankAccountRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -36,6 +37,8 @@ app.use('/account', accountRoutes);
 app.use('/note', noteRoutes);
 app.use('/operation', operationRoutes);
 app.use('/bankAccount', bankAccountRoutes);
+app.use('/report', reportRoutes);
+
 
 app.use(errorHandler);
 
