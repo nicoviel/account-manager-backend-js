@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h1 { color: #333; }
+    .section { margin-bottom: 20px; }
+    .footer { font-size: 12px; color: #777; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <h1>Rapport pour {{name}}</h1>
+
+  <div class="section">
+    <p>Date : {{date}}</p>
+    <p>Montant : {{amount}} €</p>
+  </div>
+
+<h2>Liste des éléments</h2>
+
+<ul>
+  {{#each items}}
+    <li>
+      {{this.name}} — {{this.value}}
+    </li>
+  {{/each}}
+</ul>
+
+
+
+  <div class="footer">
+    Rapport généré automatiquement.
+  </div>
+</body>
+</html>
