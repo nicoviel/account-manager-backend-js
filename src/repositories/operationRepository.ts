@@ -175,6 +175,25 @@ async saveLiveDebit(operation: LiveDebit, tx?: Prisma.TransactionClient): Promis
     return result._sum.amount || 0;
   },
 
+
+  updateMonthlyCredit: async (id: number, data: Prisma.monthly_creditUpdateInput, tx?: Prisma.TransactionClient): Promise<any> => {
+    const client = tx || prisma;
+    return await client.monthly_credit.update({
+      where: { id: id },
+      data: data
+    });
+  },
+
+  updateMonthlyDebit: async (id: number, data: Prisma.monthly_debitUpdateInput, tx?: Prisma.TransactionClient): Promise<any> => {
+    const client = tx || prisma;
+    return await client.monthly_debit.update({
+      where: { id: id },
+      data: data
+    });
+  },
+
+
+
   operationBankAccountAndAccountMapping(operation: any, formattedData: any): any {
         // 2. Mapping de la relation 'account' (Style Hibernate -> Connecteur Prisma)
     if (operation.account && operation.account.id) {
