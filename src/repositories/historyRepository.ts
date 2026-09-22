@@ -7,7 +7,7 @@ export const historyRepository = {
   findByAccountIdOrderByDescId: async (accountId: number, tx?: Prisma.TransactionClient): Promise<History[]> => {
     const client = tx || prisma;
     return await client.history.findMany({
-      where: { account_id: accountId },
+      where: { accountId: accountId },
       orderBy: {
         id: 'desc'
       }

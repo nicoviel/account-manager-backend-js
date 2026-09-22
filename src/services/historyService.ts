@@ -93,6 +93,8 @@ export const historyService = {
         await historyRepository.create(historyData);
     },
 
-
+    getHistories: async (account : Account): Promise<History[]> => {
+        return await historyRepository.findByAccountIdOrderByDescId(account.id);
+    }
 
 }

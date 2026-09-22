@@ -40,3 +40,14 @@ export const reset = async (req: Request, res: Response, next: NextFunction): Pr
     next(error);
   }
 };
+
+export const getHistories= async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const account: Account = req.body;
+    const histories = await historyService.getHistories(account);
+    res.status(200).json(histories);
+  } catch (error) {
+    next(error);
+  }
+};
+

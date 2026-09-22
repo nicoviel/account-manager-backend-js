@@ -30,6 +30,7 @@ model account {
   liveDebit live_debit[]
   monthlyCredit monthly_credit[]
   monthlyDebit monthly_debit[]
+  history history[]
 }
 
 model bank_account {
@@ -111,12 +112,13 @@ model note {
 
 model history {
   id                 Int       @id @default(autoincrement())
-  account_id         Int?
-  end_month_amount   Float?
-  start_month_amount Float?
-  amount_of_credit   Float?
-  amount_of_debit    Float?
-  saving_amount      Float?
+  accountId         Int?      @map("account_id")
+  endAmount   Float?    @map("end_month_amount")
+  startAmount Float?    @map("start_month_amount")
+  amountOfCredit   Float?    @map("amount_of_credit")
+  amountOfDebit    Float?    @map("amount_of_debit")
+  savingAmount      Float?    @map("saving_amount")
   date               DateTime? @db.Date
-  total_amount       Float?
+  totalAmount       Float?    @map("total_amount")
+  account           account?          @relation(fields: [accountId], references: [id])
 }
