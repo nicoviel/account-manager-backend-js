@@ -3,7 +3,6 @@ import prisma from '../config/db.js';
 import { accountRepository } from '../repositories/accountRepository.js';
 import { Account } from '../models/account.model.js';
 import { LiveCredit, LiveDebit, MonthlyCredit, MonthlyDebit } from '../models/operation.model.js';
-import { debitMonthlyCredit } from '../controllers/operationController.js';
 
 export const operationService = {
 

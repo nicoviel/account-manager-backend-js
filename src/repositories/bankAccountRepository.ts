@@ -21,7 +21,7 @@ export const bankAccountRepository = {
         name: data.name,
         company: data.company,
         user: {
-          connect: { id: data.user.id }   // ✔️ connexion propre
+          connect: { id: data.user!.id }   // ✔️ connexion propre
         }
       },
       include: { user: true }

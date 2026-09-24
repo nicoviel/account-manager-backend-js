@@ -1,11 +1,8 @@
 import { accountRepository } from '../repositories/accountRepository.js';
-import { bankAccountRepository } from '../repositories/bankAccountRepository.js';
-import { User } from '../models/user.model.js';
 import { Account } from '../models/account.model.js';
 import { historyRepository } from '../repositories/historyRepository.js';
 import { operationRepository } from '../repositories/operationRepository.js';
 import { History } from '../models/history.model.js';
-import { accessSync } from 'fs';
 import { Prisma } from '@prisma/client';
 
 export const historyService = {
@@ -39,13 +36,9 @@ export const historyService = {
                         totalDebits = totalDebits + (op.amount ?? 0);
                     }
                 }
-                history.amount_of_debit = totalDebits;
-
-
+                history.amountOfDebit = totalDebits;
 
                 let totalCredits = 0;
-
-
 
                 const liveCredits = await operationRepository.getLiveCredit(account);
                 for (const op of liveCredits) {
@@ -67,13 +60,13 @@ export const historyService = {
                     }
                 }
 
-                history.amount_of_credit = totalCredits;
-                history.end_month_amount = Number(account.currentAmount ?? 0) + savingAmount;
-                history.saving_amount = savingAmount;
+                history.amountOfCredit = totalCredits;
+                history.endAmount = Number(account.currentAmount ?? 0) + savingAmount;
+                history.savingAmount = savingAmount;
 
                 if (account.user) {
                     const totalAmount = await accountRepository.getTotalCurrentAmount(account.user);
-                    history.total_amount = totalAmount;
+                    history.totalAmount = totalAmount;
                     await historyRepository.update(history);
                 }
 
@@ -86,14 +79,16 @@ export const historyService = {
 
         const historyData: Prisma.historyCreateInput = {
             date: new Date(),
-            account_id: account.id,
-            start_month_amount: currentAmount,
+            // ❗ CORRECTION : on utilise la relation Prisma
+            account: {
+                connect: { id: account.id }
+            },
+            startAmount: currentAmount,
         };
-
         await historyRepository.create(historyData);
     },
 
-    getHistories: async (account : Account): Promise<History[]> => {
+    getHistories: async (account: Account): Promise<History[]> => {
         return await historyRepository.findByAccountIdOrderByDescId(account.id);
     }
 

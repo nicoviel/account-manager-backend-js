@@ -8,7 +8,9 @@ import { historyService } from '../services/historyService.js';
 export const getAccount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user: User = req.body;
+    console.log('AccountController.getAccount Input user', user)
     const account: Account | null = await accountService.findByUser(user);
+    console.log('AccountController.getAccount Output account', account)
     res.status(200).json(account);
   } catch (error) {
     next(error);
@@ -18,8 +20,10 @@ export const getAccount = async (req: Request, res: Response, next: NextFunction
 export const totalCurrentAmount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user: User = req.body;
+    console.log('AccountController.totalCurrentAmount Input user', user)
     const amount: number = await accountService.totalCurrentAmount(user);
-    res.status(200).json(amount );
+    console.log('AccountController.totalCurrentAmount Output amount', amount)
+    res.status(200).json(amount);
   } catch (error) {
     next(error);
   }
@@ -28,7 +32,7 @@ export const totalCurrentAmount = async (req: Request, res: Response, next: Next
 export const reset = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const account: Account = req.body;
-    console.log('Reset account',account);
+    console.log('AccountController.reset Input account', account)
     if (account.user) {
       await reportService.createAndSendReport(account.user);
     }
@@ -41,10 +45,12 @@ export const reset = async (req: Request, res: Response, next: NextFunction): Pr
   }
 };
 
-export const getHistories= async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getHistories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const account: Account = req.body;
+    console.log('AccountController.getHistories Input account', account)
     const histories = await historyService.getHistories(account);
+    console.log('getHistories Output histories', histories)
     res.status(200).json(histories);
   } catch (error) {
     next(error);

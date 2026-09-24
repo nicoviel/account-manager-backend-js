@@ -43,10 +43,7 @@ export class ExportService {
       dump += "\n";
     }
     emailService.sendSQLScript(dump);
-
-
     console.log("Dump SQL généré :", dump);
-
   }
 }
 
