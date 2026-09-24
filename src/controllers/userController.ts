@@ -22,7 +22,7 @@ export class UserController {
         amountAsNumber
       );
 
-      res.setHeader('Authorization', `Bearer ${this.generateToken(user)}`);
+      req.session.user = user;
       res.status(200).json(user);
     } catch (error) {
       next(error);
@@ -33,23 +33,16 @@ export class UserController {
     try {
       const { login, password } = req.body;
       const user: User = await userService.login(login, password);
-
-      res.setHeader('Authorization', `Bearer ${this.generateToken(user)}`);
+      // ÉQUIVALENT DE SecurityContextHolder.getContext().setAuthentication(...)
+      req.session.user = user;
+     
       res.status(200).json(user);
     } catch (error) {
       next(error);
     }
   }
 
-  private generateToken = (user: User): string => {
-    const jwtSecret = appConfig.jwtSecret;
-    const token = jwt.sign(
-      { userId: user.id, login: user.login },
-      jwtSecret,
-      { expiresIn: '2h' }
-    );
-    return token;
-  };
 }
+
 
 export const userController = new UserController();

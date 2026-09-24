@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
+import express, { Router } from 'express';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
@@ -11,6 +11,8 @@ import operationRoutes from './routes/operationRoutes.js';
 import bankAccountRoutes from './routes/bankAccountRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { appConfig } from './config/app.js';
+import session from "express-session";
+
 
 const app = express();
 const port = appConfig.port;
@@ -31,6 +33,35 @@ app.use(cors({
   credentials: true,
 }));
 
+app.use(
+  session({
+    name: "JSESSIONID",
+    secret: "un-super-secret",      // à mettre en env
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false               // true si HTTPS
+      //maxAge: 1000 * 60 * 60        // 1h
+    }
+  })
+);
+
+const router = Router();
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Logout failed" });
+    }
+
+    // Supprime le cookie côté navigateur
+    res.clearCookie("JSESSIONID");
+
+    return res.status(200).json({ message: "Logged out" });
+  });
+});
+
+
 app.use(express.json());
 app.use('/user', userRoutes);
 app.use('/account', accountRoutes);
@@ -38,9 +69,14 @@ app.use('/note', noteRoutes);
 app.use('/operation', operationRoutes);
 app.use('/bankAccount', bankAccountRoutes);
 app.use('/report', reportRoutes);
+app.use("/", router);
 
 
 app.use(errorHandler);
+
+app.use(express.json());
+
+
 
 app.listen(port, () => {
   console.log(`[server]: Serveur TypeScript démarré sur http://localhost:${port}`);
