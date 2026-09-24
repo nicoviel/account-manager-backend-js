@@ -12,6 +12,7 @@ import bankAccountRoutes from './routes/bankAccountRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { appConfig } from './config/app.js';
 import session from "express-session";
+import { exportService, ExportService } from './services/exportService.js';
 
 
 const app = express();
@@ -71,13 +72,24 @@ app.use('/bankAccount', bankAccountRoutes);
 app.use('/report', reportRoutes);
 app.use("/", router);
 
-
 app.use(errorHandler);
-
 app.use(express.json());
-
 
 
 app.listen(port, () => {
   console.log(`[server]: Serveur TypeScript démarré sur http://localhost:${port}`);
+    // Fonction qui appelle ton service
+  async function runScheduledTask() {
+    try {
+      await exportService.runScheduledTask();
+    } catch (error) {
+      console.error("Erreur dans la tâche programmée :", error);
+    }
+  }
+
+  // Exécution immédiate au démarrage
+  runScheduledTask();
+
+  // Exécution toutes les 12h
+  setInterval(runScheduledTask, 12 * 60 * 60 * 1000);
 });
