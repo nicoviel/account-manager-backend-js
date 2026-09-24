@@ -8,7 +8,9 @@ export const operationRepository = {
   getMonthlyDebit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyDebit[]> => {
     const client = tx || prisma;
     const rows = await client.monthly_debit.findMany({
-      where: { accountId: account.id }
+      where: { accountId: account.id }, include: {
+        bankAccount: true
+      }
     });
      return rows.map(r => ({
     ...r,
@@ -19,7 +21,9 @@ export const operationRepository = {
   getMonthlyCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<MonthlyCredit[]> => {
     const client = tx || prisma;
     const rows = await client.monthly_credit.findMany({
-      where: { accountId: account.id }
+      where: { accountId: account.id }, include: {
+        bankAccount: true
+      }
     });
      return rows.map(r => ({
     ...r,
@@ -31,7 +35,9 @@ export const operationRepository = {
   getLiveDebit: async (account: Account, tx?: Prisma.TransactionClient): Promise<LiveDebit[]> => {
     const client = tx || prisma;
     const rows = await client.live_debit.findMany({
-      where: { accountId: account.id }
+      where: { accountId: account.id }, include: {
+        bankAccount: true
+      }
     });
      return rows.map(r => ({
     ...r,
@@ -43,7 +49,9 @@ export const operationRepository = {
   getLiveCredit: async (account: Account, tx?: Prisma.TransactionClient): Promise<LiveCredit[]> => {
     const client = tx || prisma;
     const rows = await client.live_credit.findMany({
-      where: { accountId: account.id }
+      where: { accountId: account.id }, include: {
+        bankAccount: true
+      }
     });
      return rows.map(r => ({
     ...r,
@@ -193,7 +201,58 @@ async saveLiveDebit(operation: LiveDebit, tx?: Prisma.TransactionClient): Promis
   },
 
 
+detachMonthlyCreditFromBankAccount: async (id:number, tx?: Prisma.TransactionClient) => {
+   const client = tx || prisma;
+    await client.monthly_credit.updateMany({
+      where: {
+        bankAccountId: id
+      },
+      data: {
+        bankAccountId: null,
+        internal: 0
+      }
+    });
+  },
 
+  detachMonthlyDebitFromBankAccount: async (id:number, tx?: Prisma.TransactionClient) => {
+   const client = tx || prisma;
+    await client.monthly_debit.updateMany({
+      where: {
+        bankAccountId: id
+      },
+      data: {
+        bankAccountId: null,
+        internal: 0
+      }
+    });
+  },
+
+  detachLiveCreditFromBankAccount: async (id:number, tx?: Prisma.TransactionClient) => {
+   const client = tx || prisma;
+    await client.live_credit.updateMany({
+      where: {
+        bankAccountId: id
+      },
+      data: {
+        bankAccountId: null,
+        internal: 0
+      }
+    });
+  },
+
+  detachLiveDebitFromBankAccount: async (id:number, tx?: Prisma.TransactionClient) => {
+   const client = tx || prisma;
+    await client.live_debit.updateMany({
+      where: {
+        bankAccountId: id
+      },
+      data: {
+        bankAccountId: null,
+        internal: 0
+      }
+    });
+  },
+  
   operationBankAccountAndAccountMapping(operation: any, formattedData: any): any {
         // 2. Mapping de la relation 'account' (Style Hibernate -> Connecteur Prisma)
     if (operation.account && operation.account.id) {
@@ -210,4 +269,5 @@ async saveLiveDebit(operation: LiveDebit, tx?: Prisma.TransactionClient): Promis
     }
 
   }
+
 };

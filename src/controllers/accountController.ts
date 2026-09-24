@@ -19,7 +19,7 @@ export const totalCurrentAmount = async (req: Request, res: Response, next: Next
   try {
     const user: User = req.body;
     const amount: number = await accountService.totalCurrentAmount(user);
-    res.status(200).json({ amount });
+    res.status(200).json(amount );
   } catch (error) {
     next(error);
   }

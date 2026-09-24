@@ -13,6 +13,20 @@ export const bankAccountRepository = {
   },
 
 
+  save: async (data: BankAccount, tx?: Prisma.TransactionClient) => {
+    const client = tx || prisma;
+    return await client.bank_account.create({
+      data: {
+        amount: data.amount,
+        name: data.name,
+        company: data.company,
+        user: {
+          connect: { id: data.user.id }   // ✔️ connexion propre
+        }
+      },
+      include: { user: true }
+    });
+  },
 
   totalAmountForAllAccount: async (user: User, tx?: Prisma.TransactionClient): Promise<number> => {
     const client = tx || prisma;
@@ -25,5 +39,13 @@ export const bankAccountRepository = {
       }
     });
     return result._sum.amount || 0;
+  },
+
+  delete: async (id: number, tx?: Prisma.TransactionClient) => {
+    const client = tx || prisma;
+    await client.bank_account.delete({
+      where: { id: id }
+    });
+
   }
 };
