@@ -1,7 +1,7 @@
 import { User } from '../models/user.model.js';
 import { Account } from '../models/account.model.js';
 import { emailService } from './emailService.js';
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 import { accountService } from './accountService.js';
@@ -16,10 +16,10 @@ export const reportService = {
     createAndSendReport: async (user: User) => {
         if (user.email) {
 
-            const data: ReportTemplate =  {login : user.login, firstName: user.firstName, lastName:user.lastName};
-            const account:Account |null = await accountService.findByUser(user);
-            data.account=account;
-            if(account) {            
+            const data: ReportTemplate = { login: user.login, firstName: user.firstName, lastName: user.lastName };
+            const account: Account | null = await accountService.findByUser(user);
+            data.account = account;
+            if (account) {
                 data.liveCredits = await operationService.getLiveCredit(account);
                 data.liveDebits = await operationService.getLiveDebit(account);
                 data.monthlyCredits = await operationService.getMonthlyCredit(account);
@@ -41,10 +41,16 @@ export const reportService = {
         const template = Handlebars.compile(html);
         const finalHtml = template(data);
 
+
         const browser = await puppeteer.launch({
+            // Indique explicitement à Puppeteer d'exécuter la version shell (ancienne méthode headless mais ultra performante)
             headless: 'shell',
             timeout: 60000,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage', // Indispensable sous Docker pour éviter les crashs de mémoire
+            ]
         });
 
         try {
@@ -62,5 +68,5 @@ export const reportService = {
         }
     },
 
-    
+
 }

@@ -69,9 +69,9 @@ export const accountService = {
             account.futureAmountWithCredit = account.currentAmount ?? 0 - amountDebit + amountCredit;
             account.futureAmountWithoutCredit = account.currentAmount ?? 0 - amountDebit;
             await accountRepository.update(account.id, {
-                currentAmount: account.currentAmount,
-                futureAmountWithCredit: account.futureAmountWithCredit,
-                futureAmountWithoutCredit: account.futureAmountWithoutCredit,
+                currentAmount: Number(account.currentAmount),
+                futureAmountWithCredit: Number(account.futureAmountWithCredit),
+                futureAmountWithoutCredit: Number(account.futureAmountWithoutCredit),
             }, tx);
 
 

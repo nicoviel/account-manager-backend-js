@@ -38,7 +38,7 @@ router.post('/createMonthlyCredit', isAuthenticated, (req, res, next) => createM
 router.post('/debitLiveCredit', isAuthenticated, (req, res, next) => debitLiveCredit(req, res, next));
 router.post('/debitMonthlyCredit', isAuthenticated, (req, res, next) => debitMonthlyCredit(req, res, next));
 
-router.post('/debitLiveDebit, isAuthenticated', (req, res, next) => debitLiveDebit(req, res, next));
+router.post('/debitLiveDebit', isAuthenticated, (req, res, next) => debitLiveDebit(req, res, next));
 router.post('/debitMonthlyDebit', isAuthenticated, (req, res, next) => debitMonthlyDebit(req, res, next));
 
 router.delete('/deleteMonthlyDebit/:id', isAuthenticated, (req, res, next) => deleteMonthlyDebit(req, res, next));
